@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://wvanheemstra@github.com/wvanheemstra/tacit-server.git"
+    "url": "git+https://wvanheemstra@github.com/vanHeemstraSystems/tacit-server.git"
   },
   "keywords": [
     "tacit",
@@ -17,9 +17,9 @@
   "author": "Willem van Heemstra <willem@vanheemstrasystems.com> (http://vanheemstrasystems.com)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wvanheemstra/tacit-server/issues"
+    "url": "https://github.com/vanHeemstraSystems/tacit-server/issues"
   },
-  "homepage": "https://github.com/wvanheemstra/tacit-server#readme",
+  "homepage": "https://github.com/vanHeemstraSystems/tacit-server#readme",
   "devDependencies": {
     "chai": "^2.3.0",
     "mocha": "^2.2.5"
