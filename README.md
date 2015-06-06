@@ -27,4 +27,5 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 
 ## Release History
 
+* 1.0.1 Changed node-sass version to ^3.1.2 in package.json
 * 1.0.0 Initial release
