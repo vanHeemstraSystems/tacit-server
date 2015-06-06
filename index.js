@@ -58,8 +58,8 @@ FacebookStrategy = require('passport-facebook').Strategy;
 //   */
 //  this.config = {}; // does not show as a property, but can be accessed
 //};
-var Server = new Object(),
-  Server.config = {};
+var Server = new Object();
+Server.config = {};
 // Server setConfig function
 Server.setConfig = function setConfig(config) {
   Server.config = config;
