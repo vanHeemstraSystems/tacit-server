@@ -1,5 +1,6 @@
 /*
-* TACIT SERVER - The Tacit Server
+* TACIT SERVER - The Tacit Server module
+* @module tacit-server
 *
 * Usage
 * var TacitServer = require("./tacitserver");
@@ -48,15 +49,17 @@ FacebookStrategy = require('passport-facebook').Strategy;
  * SERVER - The Server used for shutdown etc
  * See: https://www.exratione.com/2011/07/running-a-nodejs-server-as-a-service-using-forever/
  */
-function Server() {
-  if(!(this instanceof Server)){
-    return new Server();
-  };
-  /*
-   * CONFIGS - The Configurations
-   */
-  this.config = {}; // does not show as a property, but can be accessed
-};
+//function Server() {
+//  if(!(this instanceof Server)){
+//    return new Server();
+//  };
+//  /*
+//   * CONFIGS - The Configurations
+//   */
+//  this.config = {}; // does not show as a property, but can be accessed
+//};
+var Server = new Object(),
+  Server.config = {};
 // Server setConfig function
 Server.setConfig = function setConfig(config) {
   Server.config = config;
