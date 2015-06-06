@@ -1,6 +1,6 @@
 {
   "name": "tacit-server",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "The server module of the tacit system.",
   "main": "index.js",
   "scripts": {

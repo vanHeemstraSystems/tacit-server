@@ -69,15 +69,17 @@ Server.getConfig = function getConfig() {
   return Server.config;
 };
 // Define TacitServer
-function TacitServer() {
-  if(!(this instanceof TacitServer)){
-    return new TacitServer();
-  };
-  /*
-   * CONFIGS - The Configurations
-   */
-  this.config = {}; // does not show as a property, but can be accessed
-};
+//function TacitServer() {
+//  if(!(this instanceof TacitServer)){
+//    return new TacitServer();
+//  };
+//  /*
+//   * CONFIGS - The Configurations
+//   */
+//  this.config = {}; // does not show as a property, but can be accessed
+//};
+var TacitServer = new Object();
+TacitServer.config = {};
 // TacitServer setConfig function
 TacitServer.setConfig = function setConfig(config) {
   TacitServer.config = config;
@@ -95,8 +97,9 @@ TacitServer.testObject1 = function testObject1(string) {
   return String(string);
 };
 // Add Server to TacitServer
-TacitServer.Server = function Server() {
-  return Server;
-};
+//TacitServer.Server = function Server() {
+//  return Server;
+//};
+TacitServer.Server = Server;
 // Export TacitServer
 module.exports = TacitServer;
