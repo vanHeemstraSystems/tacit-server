@@ -1,45 +1,37 @@
 var should = require('chai').should(),
     expect = require('chai').expect(),
     tacitServer = require('../index'),
-    testFunction1 = tacitServer.testFunction1,
+    testFunction1 = tacitServer.testFunction1, // Note: no () at end of function name
     testObject1 = tacitServer.testObject1,
-    server = tacitServer.Server();
+    server = tacitServer.Server;
 
 console.log("tacitServer:");
 console.log(tacitServer);
 
-console.log("tacitServer.setConfig({'test':true}):");
-tacitServer.setConfig({'test':true});
-console.log(tacitServer.setConfig);
+console.log("tacitServer.Server:");
+console.log(tacitServer.Server);
 
-console.log("tacitServer.getConfig():");
-console.log(tacitServer.getConfig);
-var config = tacitServer.config;
+console.log("tacitServer.Server.setConfig({'test':true}):");
+tacitServer.Server.setConfig({'test':true});
+
+console.log("tacitServer.Server.getConfig():");
+var config = tacitServer.Server.getConfig();
 console.log(config);
 
 console.log("tacitServer.config:");
 console.log(tacitServer.config);
 
-console.log("testFunction1:");
+console.log("testFunction1():");
 console.log(tacitServer.testFunction1);
-
-console.log("Server:");
-console.log(tacitServer.Server);
-
-//describe('#tacitServer', function() {
-//  it('tacitServer', function() {
-//    tacitServer.testFunction2('Hello World!').should.equal('Hello World!');
-//  });
-//});
 
 describe('#testObject1', function() {
   it('testObject1', function() {
     //tacitServer('Hello World!').should.equal('Hello World!');
     //(new tacitServer()).should.be.a('function'); // fails: object is not a function, that's right!
-    //(new tacitServer()).should.be.an('object'); // fails: object is not a function
+    //(new testObject1.should.be.an('object'); // fails: object is not a function
     //expect(null).to.be.a('null'); // fails: object is not a function
-    //expect(server).to.be.an.instanceof(Object); // fails: object is not a function
-    testObject1('Hello Server!').should.equal('Hello Server!'); // passes!
+    //expect(testObject1).to.be.an.instanceof(Object); // fails: object is not a function
+    //testObject1('Hello Server!').should.equal('Hello Server!'); // passes!
   });
 });
 
@@ -49,19 +41,19 @@ describe('#testFunction1', function() {
   });
 });
 
-//describe('#server', function() {
-//  it('server', function() {
+describe('#tacitServer.Server', function() {
+  it('tacitServer.Server', function() {
 //    (new server()).should.be.a('function');
 //    //(new Object()).should.be.a('object');
 //    //expect(server).to.be.an.instanceof(Object);
 //    //expect(null).to.be.a('null');
-//  });
-//});
+  });
+});
 
-//describe('#setConfig', function() {
-//  it('setConfig', function() {
+describe('#tacitServer.Server.setConfig', function() {
+  it('tacitServer.Server.setConfig', function() {
 //    (new server.setConfig()).should.be.a('function');
 //    //(new setConfig()).should.be.a('function');
 //    //setConfig('{"test":true}').should.equal(null); // no return
-//  });
-//});
+  });
+});

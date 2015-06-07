@@ -3,24 +3,25 @@
 * @module tacit-server
 *
 * Usage
-* var TacitServer = require("./tacitserver");
+* var TacitServer = require("tacitserver");
 *
 * // you can use the 'new' keyword
-* var ts = new TacitServer(5); // tacit server object
-* var s = ts.Server(); // server object
+* var ts = new TacitServer; // tacit server object
+* var s = ts.Server; // server object
 * var config = {'test':true};
 * s.setConfig(config); // sets the server config
 *
 * // or you can skip it!
-* var ts = TacitServer(5); // tacit server object
-* var s = ts.Server(); // server object
+* var ts = TacitServer; // tacit server object
+* var s = ts.Server; // server object
 * var config = {'test':true};
 * s.setConfig(config); // sets the server config
 */
-
 // See also http://www.sitepoint.com/understanding-module-exports-exports-node-js/
 // See also http://stackoverflow.com/questions/20534702/node-js-use-of-module-exports-as-a-constructor
-
+/**
+* Module dependencies.
+*/
 var express = require('express'),
 path = require('path'),
 mime = require('mime'),
@@ -49,15 +50,6 @@ FacebookStrategy = require('passport-facebook').Strategy;
  * SERVER - The Server used for shutdown etc
  * See: https://www.exratione.com/2011/07/running-a-nodejs-server-as-a-service-using-forever/
  */
-//function Server() {
-//  if(!(this instanceof Server)){
-//    return new Server();
-//  };
-//  /*
-//   * CONFIGS - The Configurations
-//   */
-//  this.config = {}; // does not show as a property, but can be accessed
-//};
 var Server = new Object();
 Server.config = {};
 // Server setConfig function
@@ -69,15 +61,6 @@ Server.getConfig = function getConfig() {
   return Server.config;
 };
 // Define TacitServer
-//function TacitServer() {
-//  if(!(this instanceof TacitServer)){
-//    return new TacitServer();
-//  };
-//  /*
-//   * CONFIGS - The Configurations
-//   */
-//  this.config = {}; // does not show as a property, but can be accessed
-//};
 var TacitServer = new Object();
 TacitServer.config = {};
 // TacitServer setConfig function
@@ -93,13 +76,8 @@ TacitServer.testFunction1 = function testFunction1(string) {
   return String(string);
 };
 // TacitServer Test object 1
-TacitServer.testObject1 = function testObject1(string) {
-  return String(string);
-};
+TacitServer.testObject1 = new Object();
 // Add Server to TacitServer
-//TacitServer.Server = function Server() {
-//  return Server;
-//};
 TacitServer.Server = Server;
 // Export TacitServer
 module.exports = TacitServer;
