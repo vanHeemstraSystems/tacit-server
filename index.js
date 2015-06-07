@@ -50,16 +50,17 @@ FacebookStrategy = require('passport-facebook').Strategy;
  * SERVER - The Server used for shutdown etc
  * See: https://www.exratione.com/2011/07/running-a-nodejs-server-as-a-service-using-forever/
  */
-var Server = new Object();
-Server.config = {};
+var Server = express();
+//Server.config = {};
 // Server setConfig function
-Server.setConfig = function setConfig(config) {
-  Server.config = config;
-};
+//Server.setConfig = function setConfig(config) {
+//  Server.config = config;
+//};
 // Server getConfig function
-Server.getConfig = function getConfig() {
-  return Server.config;
-};
+//Server.getConfig = function getConfig() {
+//  return Server.config;
+//};
+
 // Define TacitServer
 var TacitServer = new Object();
 TacitServer.config = {};
