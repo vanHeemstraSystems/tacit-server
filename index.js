@@ -118,6 +118,12 @@ var App = express();
 */
 if('development' == App.settings.env){
 	console.log("Using development configurations");
+  App.set('view engine', 'ejs');
+	App.set('view options', {
+		// layout: '/../public/layout.ejs',
+		// layout_content_container_no_sidebar: '/../public/layout_content_container_no_sidebar.ejs'
+	});
+	App.set('views', __dirname + '/../../views');
 
   // ... more
 
@@ -138,10 +144,62 @@ if('development' == App.settings.env){
 */
 if('production' == App.settings.env){
 	console.log("Using production configurations");
+  App.set('view engine', 'ejs');
+	App.set('view options', {
+		// layout: '/../public/layout.ejs',
+		// layout_content_container_no_sidebar: '/../public/layout_content_container_no_sidebar.ejs'
+	});
+	App.set('views', __dirname + '/../../views');
 
   // ... more
 
 }
+/**
+* ALL APP requests
+*/
+App.all('*', function(req, res, next){
+	if (!req.get('Origin')) return next();
+	// use "*" here to accept any origin
+	res.set('Access-Control-Allow-Origin', '*'); // Accepts requests coming from anyone, replace '*' by configs.allowedHosts to restrict it
+	res.set('Access-Control-Allow-Methods', 'GET, PUT, POST');
+	res.set('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
+	// res.set('Access-Control-Allow-Max-Age', 3600);
+	if ('OPTIONS' == req.method) return res.send(200);
+	// for static file requests
+	var static_file_path = "../public/";
+	var uri = url.parse(req.url).pathname;
+	var filename = path.join(static_file_path, uri);
+	fs.exists(filename, function(exists) {
+		if (!exists) {
+			res.writeHead(404, {
+				"Content-Type": "text/plain"
+			});
+			res.write("404 Not Found\n");
+			res.end();
+			return;
+		}
+		if(fs.statSync(filename).isDirectory()) {
+			// filename += '/index.html';
+			next();
+		}
+		fs.readFile(filename, "binary", function(err, file) {
+			if(err) {
+				res.writeHead(500, {
+					"Content-Type": "text/plain"
+				});
+				res.write(err + "\n");
+				res.end();
+				return;
+			}
+			var type = mime.lookup(filename);
+			res.writeHead(200, {
+				"Content-Type": type
+			});
+			res.write(file, "binary");
+			res.end();
+		});
+	});
+});
 /*
 * API - The Application Programming Interface
 */
