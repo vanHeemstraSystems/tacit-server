@@ -124,10 +124,141 @@ if('development' == App.settings.env){
 		// layout_content_container_no_sidebar: '/../public/layout_content_container_no_sidebar.ejs'
 	});
 	App.set('views', __dirname + '/../../views');
-
-  // ... more
-
-}
+  /*
+	* CORS
+	* See https://www.npmjs.com/package/cors
+	*/
+	App.use(cors());
+	/*
+	* bodyParser() is the composition of three middlewares:
+	* - json: parses application/json request bodies
+	* - urlencoded: parses x-ww.form-urlencoded request bodies
+	* - multipart: parses multipart/form-data request bodies
+	*/
+	App.use(partials());
+	App.use(morgan('dev'));
+	App.use(bodyParser.urlencoded({
+  	extended: true
+	})); // NEW IN CONNECT 3.0
+	App.use(bodyParser.json()); // NEW IN CONNECT 3.0
+	App.use(methodOverride());
+	App.use(cookieParser('s3cr3t')); // TODO get from config
+  i18n.expressBind(App, {
+locales: ['nl', 'en'], // TODO get from config
+defaultLocale: 'en',   // TODO get from config
+cookieName: 'locale'
+	});
+	App.use(function(req, res, next) {
+		req.i18n.setLocaleFromQuery();
+		req.i18n.setLocaleFromCookie();
+		next();
+	});
+	App.use(device.capture());
+	App.enableDeviceHelpers();
+	App.enableViewRouting();
+	App.use(sassMiddleware({
+src: path.join(__dirname, '/../../public/css'), // looks for extension .scss
+dest: path.join(__dirname + '/../../public/css'), // uses the same dir, but saves with extension .css
+debug: true,
+outputStyle: 'compressed',
+prefix:  '/css'
+	}));
+	App.use('/app', express.static(path.join(__dirname, '/../../public/app')));
+	App.use('/tests', express.static(path.join(__dirname, '/../../tests')));
+	App.use(express.static(path.join(__dirname, '/../../public'))); // Fall back to this as a last resort
+	App.use(errorHandler({ dumpExceptions: true, showStack: true })); // specific for development
+	// These next instructions are placed after express.static to avoid passport.deserializeUser to be called several times
+	App.use(session({secret: 'default', saveUninitialized: true, resave: true})); // required by passport, default values required
+	App.use(passport.initialize());
+	App.use(passport.session());
+	/**
+	* Passport
+	* See http://truongtx.me/2014/03/29/authentication-in-nodejs-and-expressjs-with-passportjs-part-1/
+	*/
+	passport.serializeUser(function(user, done) {
+		console.log(TacitServer.configs.server_prefix + " - Serialize user " + user);
+		return done(null, user.id);
+	});
+	passport.deserializeUser(function(id, done) {
+		var user = '';
+		var user_keys = {};
+		var user_not_found = true; // default to true
+		// Lookup user in user list by id, if found set not_found to false
+		for (key in user_list) {
+			user = key;
+			user_keys = user_list[key];
+			for(user_key in user_keys) {
+				if(user_key == 'id') {
+					var id_key = user_key;
+					var id_value = user_keys[user_key];
+					if(id_value == id) {
+						id = id_value;
+						user_not_found = false;
+						break;
+					}
+				}
+			}
+		}//eof for
+		if(user_not_found) {
+			console.log(TacitServer.configs.server_prefix + " - Deserialize user " + user + " failed: user not found");
+			user = 'not_found';
+			return done(null, false, {message: "The user " + user + " has not been found."});
+		}
+		else {
+			console.log(TacitServer.configs.server_prefix + " - Deserialize user " + user);
+			return done(null, user);
+		}
+	});
+	passport.use(new LocalStrategy({
+		// Set the field names here
+usernameField: 'username',
+passwordField: 'password'
+	},
+	function(username, password, done) {
+		console.log(TacitServer.configs.server_prefix + " - Authenticating username " + username + " and password " + password);
+		// Get the username and password from the input arguments of the function
+		var user_key = '';
+		var user_values = {};
+		var user_not_found = true; // default to true
+		// Lookup user in user list, if found set not_found to false
+		for (key in user_list) {
+			if(key == username) {
+				user_key = key;
+				console.log(TacitServer.configs.server_prefix + " - Authenticating found user key:");
+				console.log(user_key);
+				user_values = user_list[user_key];
+				console.log(TacitServer.configs.server_prefix + " - Authenticating found user values:");
+				console.log(user_values);
+				user_not_found = false;
+				break;
+			}
+		}//eof for
+		if(user_not_found) {
+			console.log(TacitServer.configs.server_prefix + " - User requested, but not found: " + user);
+			user = 'not_found';
+			return done(null, false, {message: "The user " + user + " has not been found."});
+		}
+		else {
+			var salt = user_values.salt;
+			hash(password, salt, function (err, hash) {
+				if(err) {
+					console.log(TacitServer.configs.server_prefix + " - Error: " + err);
+					return done(err);
+				}
+				hash = hash.toString('hex'); // NOTE: necessary for string comparison
+				if(hash == user_values.hash) {
+					console.log(TacitServer.configs.server_prefix + " - Correct password");
+					return done(null, user_values);
+				}
+				console.log(TacitServer.configs.server_prefix + " - Incorrect password");
+				return done(null, false, { message: 'Incorrect password.' });
+			});
+		}
+	}
+	));
+	// TODO:
+	// passport.use(new FacebookStrategy({}));
+};
 /*
 * APP PRODUCTION
 *
@@ -150,10 +281,142 @@ if('production' == App.settings.env){
 		// layout_content_container_no_sidebar: '/../public/layout_content_container_no_sidebar.ejs'
 	});
 	App.set('views', __dirname + '/../../views');
+  /*
+  * CORS
+  * See https://www.npmjs.com/package/cors
+  */
+  App.use(cors());
+	/*
+	* bodyParser() is the composition of three middlewares:
+	* - json: parses application/json request bodies
+	* - urlencoded: parses x-ww.form-urlencoded request bodies
+	* - multipart: parses multipart/form-data request bodies
+	*/
+	App.use(partials());
+	App.use(morgan('prod'));
+	App.use(bodyParser.urlencoded({
+  	extended: true
+	})); // NEW IN CONNECT 3.0
+	App.use(bodyParser.json()); // NEW IN CONNECT 3.0
+	App.use(methodOverride());
+	App.use(cookieParser('s3cr3t')); // TODO get from config
 
-  // ... more
-
-}
+  i18n.expressBind(App, {
+locales: ['nl', 'en'], // TODO get from config
+defaultLocale: 'en',   // TODO get from config
+cookieName: 'locale'
+	});
+  App.use(function(req, res, next) {
+		req.i18n.setLocaleFromQuery();
+		req.i18n.setLocaleFromCookie();
+		next();
+	});
+  App.use(device.capture());
+  App.enableDeviceHelpers();
+  App.enableViewRouting();
+  App.use(sass.middleware({
+src: path.join(__dirname, '/../../public/css'), // looks for extension .scss
+dest: path.join(__dirname + '/../../public/css'), // uses the same dir, but saves with extension .css
+debug: true,
+outputStyle: 'compressed',
+prefix:  '/css'
+	}));
+  App.use('/app', express.static(path.join(__dirname, '/../../public/app')));
+  App.use('/tests', express.static(path.join(__dirname, '/../../tests')));
+  App.use(express.static(path.join(__dirname, '/../../public'))); // Fall back to this as a last resort
+  App.use(errorHandler({ dumpExceptions: false, showStack: false })); // specific for production
+	// These next instructions are placed after express.static to avoid passport.deserializeUser to be called several times
+  App.use(session({secret: 'default', saveUninitialized: true, resave: true})); // required by passport, default values required
+  App.use(passport.initialize());
+  App.use(passport.session());
+	/**
+	* Passport
+	* See http://truongtx.me/2014/03/29/authentication-in-nodejs-and-expressjs-with-passportjs-part-1/
+	*/
+	passport.serializeUser(function(user, done) {
+		console.log(server_prefix + " - Serialize user " + user);
+		return done(null, user.id);
+	});
+	passport.deserializeUser(function(id, done) {
+		var user = '';
+		var user_keys = {};
+		var user_not_found = true; // default to true
+		// Lookup user in user list by id, if found set not_found to false
+		for (key in user_list) {
+			user = key;
+			user_keys = user_list[key];
+			for(user_key in user_keys) {
+				if(user_key == 'id') {
+					var id_key = user_key;
+					var id_value = user_keys[user_key];
+					if(id_value == id) {
+						id = id_value;
+						user_not_found = false;
+						break;
+					}
+				}
+			}
+		}//eof for
+		if(user_not_found) {
+			console.log(TacitServer.configs.server_prefix + " - Deserialize user " + user + " failed: user not found");
+			user = 'not_found';
+			return done(null, false, {message: "The user " + user + " has not been found."});
+		}
+		else {
+			console.log(TacitServer.configs.server_prefix + " - Deserialize user " + user);
+			return done(null, user);
+		}
+	});
+	passport.use(new LocalStrategy({
+		// Set the field names here
+usernameField: 'username',
+passwordField: 'password'
+	},
+	function(username, password, done) {
+		console.log(TacitServer.configs.server_prefix + " - Authenticating username " + username + " and password " + password);
+		// Get the username and password from the input arguments of the function
+		var user_key = '';
+		var user_values = {};
+		var user_not_found = true; // default to true
+		// Lookup user in user list, if found set not_found to false
+		for (key in user_list) {
+			if(key == username) {
+				user_key = key;
+				console.log(TacitServer.configs.server_prefix + " - Authenticating found user key:");
+				console.log(user_key);
+				user_values = user_list[user_key];
+				console.log(TacitServer.configs.server_prefix + " - Authenticating found user values:");
+				console.log(user_values);
+				user_not_found = false;
+				break;
+			}
+		}//eof for
+		if(user_not_found) {
+			console.log(TacitServer.configs.server_prefix + " - User requested, but not found: " + user);
+			user = 'not_found';
+			return done(null, false, {message: "The user " + user + " has not been found."});
+		}
+		else {
+			var salt = user_values.salt;
+			hash(password, salt, function (err, hash) {
+				if(err) {
+					console.log(TacitServer.configs.server_prefix + " - Error: " + err);
+					return done(err);
+				}
+				hash = hash.toString('hex'); // NOTE: necessary for string comparison
+				if(hash == user_values.hash) {
+					console.log(TacitServer.configs.server_prefix + " - Correct password");
+					return done(null, user_values);
+				}
+				console.log(TacitServer.configs.server_prefix + " - Incorrect password");
+				return done(null, false, { message: 'Incorrect password.' });
+			});
+		}
+	}
+	));
+	// TODO:
+	// passport.use(new FacebookStrategy({}));
+};
 /**
 * ALL APP requests
 */
