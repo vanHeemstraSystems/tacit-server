@@ -4,6 +4,7 @@
   "description": "The server module of the tacit system.",
   "main": "index.js",
   "scripts": {
+    "start": "index",
     "test": "make test"
   },
   "repository": {
