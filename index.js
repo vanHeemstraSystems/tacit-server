@@ -23,29 +23,29 @@
 * Module dependencies.
 */
 var express = require('express'),
-path = require('path'),
-mime = require('mime'),
-fs = require('fs'),
-url = require('url'),
-http = require('http'),
-cors = require('cors'),
-runner = require('child_process'),
-morgan = require('morgan'),
-partials = require('express-partials'),
-device = require('./lib/device.js'),
-hash = require('./lib/pass.js').hash,
-redirect = require('express-redirect'),
-bodyParser = require('body-parser'),
-cookieParser = require('cookie-parser'),
-i18n = require('i18n-2'),
-methodOverride = require('method-override'),
-errorHandler = require('errorhandler'),
-sass = require('node-sass'),
-sassMiddleware = require('node-sass-middleware'),
-session = require('express-session'),
-passport = require('passport'),
-LocalStrategy = require('passport-local').Strategy,
-FacebookStrategy = require('passport-facebook').Strategy;
+	path = require('path'),
+	mime = require('mime'),
+	fs = require('fs'),
+	url = require('url'),
+	http = require('http'),
+	cors = require('cors'),
+	runner = require('child_process'),
+	morgan = require('morgan'),
+	partials = require('express-partials'),
+	device = require('./lib/device.js'),
+	hash = require('./lib/pass.js').hash,
+	redirect = require('express-redirect'),
+	bodyParser = require('body-parser'),
+	cookieParser = require('cookie-parser'),
+	i18n = require('i18n-2'),
+	methodOverride = require('method-override'),
+	errorHandler = require('errorhandler'),
+	sass = require('node-sass'),
+	sassMiddleware = require('node-sass-middleware'),
+	session = require('express-session'),
+	passport = require('passport'),
+	LocalStrategy = require('passport-local').Strategy,
+	FacebookStrategy = require('passport-facebook').Strategy;
 // Define TacitServer
 var TacitServer = new Object();
 TacitServer.configs = {};
@@ -118,13 +118,13 @@ var App = express();
 */
 if('development' == App.settings.env){
 	console.log("Using development configurations");
-  App.set('view engine', 'ejs');
+	App.set('view engine', 'ejs');
 	App.set('view options', {
 		// layout: '/../public/layout.ejs',
 		// layout_content_container_no_sidebar: '/../public/layout_content_container_no_sidebar.ejs'
 	});
 	App.set('views', __dirname + '/../../views');
-  /*
+	/*
 	* CORS
 	* See https://www.npmjs.com/package/cors
 	*/
@@ -143,10 +143,10 @@ if('development' == App.settings.env){
 	App.use(bodyParser.json()); // NEW IN CONNECT 3.0
 	App.use(methodOverride());
 	App.use(cookieParser('s3cr3t')); // TODO get from config
-  i18n.expressBind(App, {
-locales: ['nl', 'en'], // TODO get from config
-defaultLocale: 'en',   // TODO get from config
-cookieName: 'locale'
+	i18n.expressBind(App, {
+		locales: ['nl', 'en'], // TODO get from config
+		defaultLocale: 'en',   // TODO get from config
+		cookieName: 'locale'
 	});
 	App.use(function(req, res, next) {
 		req.i18n.setLocaleFromQuery();
@@ -157,11 +157,11 @@ cookieName: 'locale'
 	App.enableDeviceHelpers();
 	App.enableViewRouting();
 	App.use(sassMiddleware({
-src: path.join(__dirname, '/../../public/css'), // looks for extension .scss
-dest: path.join(__dirname + '/../../public/css'), // uses the same dir, but saves with extension .css
-debug: true,
-outputStyle: 'compressed',
-prefix:  '/css'
+		src: path.join(__dirname, '/../../public/css'), // looks for extension .scss
+		dest: path.join(__dirname + '/../../public/css'), // uses the same dir, but saves with extension .css
+		debug: true,
+		outputStyle: 'compressed',
+		prefix:  '/css'
 	}));
 	App.use('/app', express.static(path.join(__dirname, '/../../public/app')));
 	App.use('/tests', express.static(path.join(__dirname, '/../../tests')));
@@ -211,8 +211,8 @@ prefix:  '/css'
 	});
 	passport.use(new LocalStrategy({
 		// Set the field names here
-usernameField: 'username',
-passwordField: 'password'
+		usernameField: 'username',
+		passwordField: 'password'
 	},
 	function(username, password, done) {
 		console.log(TacitServer.configs.server_prefix + " - Authenticating username " + username + " and password " + password);
@@ -275,17 +275,17 @@ passwordField: 'password'
 */
 if('production' == App.settings.env){
 	console.log("Using production configurations");
-  App.set('view engine', 'ejs');
+	App.set('view engine', 'ejs');
 	App.set('view options', {
 		// layout: '/../public/layout.ejs',
 		// layout_content_container_no_sidebar: '/../public/layout_content_container_no_sidebar.ejs'
 	});
 	App.set('views', __dirname + '/../../views');
-  /*
-  * CORS
-  * See https://www.npmjs.com/package/cors
-  */
-  App.use(cors());
+	/*
+	* CORS
+	* See https://www.npmjs.com/package/cors
+	*/
+	App.use(cors());
 	/*
 	* bodyParser() is the composition of three middlewares:
 	* - json: parses application/json request bodies
@@ -301,34 +301,34 @@ if('production' == App.settings.env){
 	App.use(methodOverride());
 	App.use(cookieParser('s3cr3t')); // TODO get from config
 
-  i18n.expressBind(App, {
-locales: ['nl', 'en'], // TODO get from config
-defaultLocale: 'en',   // TODO get from config
-cookieName: 'locale'
+	i18n.expressBind(App, {
+		locales: ['nl', 'en'], // TODO get from config
+		defaultLocale: 'en',   // TODO get from config
+		cookieName: 'locale'
 	});
-  App.use(function(req, res, next) {
+	App.use(function(req, res, next) {
 		req.i18n.setLocaleFromQuery();
 		req.i18n.setLocaleFromCookie();
 		next();
 	});
-  App.use(device.capture());
-  App.enableDeviceHelpers();
-  App.enableViewRouting();
-  App.use(sass.middleware({
-src: path.join(__dirname, '/../../public/css'), // looks for extension .scss
-dest: path.join(__dirname + '/../../public/css'), // uses the same dir, but saves with extension .css
-debug: true,
-outputStyle: 'compressed',
-prefix:  '/css'
+	App.use(device.capture());
+	App.enableDeviceHelpers();
+	App.enableViewRouting();
+	App.use(sass.middleware({
+		src: path.join(__dirname, '/../../public/css'), // looks for extension .scss
+		dest: path.join(__dirname + '/../../public/css'), // uses the same dir, but saves with extension .css
+		debug: true,
+		outputStyle: 'compressed',
+		prefix:  '/css'
 	}));
-  App.use('/app', express.static(path.join(__dirname, '/../../public/app')));
-  App.use('/tests', express.static(path.join(__dirname, '/../../tests')));
-  App.use(express.static(path.join(__dirname, '/../../public'))); // Fall back to this as a last resort
-  App.use(errorHandler({ dumpExceptions: false, showStack: false })); // specific for production
+	App.use('/app', express.static(path.join(__dirname, '/../../public/app')));
+	App.use('/tests', express.static(path.join(__dirname, '/../../tests')));
+	App.use(express.static(path.join(__dirname, '/../../public'))); // Fall back to this as a last resort
+	App.use(errorHandler({ dumpExceptions: false, showStack: false })); // specific for production
 	// These next instructions are placed after express.static to avoid passport.deserializeUser to be called several times
-  App.use(session({secret: 'default', saveUninitialized: true, resave: true})); // required by passport, default values required
-  App.use(passport.initialize());
-  App.use(passport.session());
+	App.use(session({secret: 'default', saveUninitialized: true, resave: true})); // required by passport, default values required
+	App.use(passport.initialize());
+	App.use(passport.session());
 	/**
 	* Passport
 	* See http://truongtx.me/2014/03/29/authentication-in-nodejs-and-expressjs-with-passportjs-part-1/
@@ -369,8 +369,8 @@ prefix:  '/css'
 	});
 	passport.use(new LocalStrategy({
 		// Set the field names here
-usernameField: 'username',
-passwordField: 'password'
+		usernameField: 'username',
+		passwordField: 'password'
 	},
 	function(username, password, done) {
 		console.log(TacitServer.configs.server_prefix + " - Authenticating username " + username + " and password " + password);
@@ -555,153 +555,153 @@ function args(req, res) {
 }
 // TacitServer setConfigs function
 TacitServer.setConfigs = function setConfigs(configs) {
-  TacitServer.configs = configs;
-  // Server Prefix
-  if(typeof TacitServer.configs.server_prefix === 'undefined'){
-    var server_prefix = TacitServer.configs.server_prefix = "SERVER_PREFIX";
-  }
-  else {
-  	var server_prefix = TacitServer.configs.server_prefix;
-  }
-  // Server Port
-  if(typeof TacitServer.configs.server_port === 'undefined'){
-  	//var server_port = process.env.PORT || 14080;
-    var server_port = TacitServer.configs.server_port = process.env.PORT;
-  }
-  else {
-  	var server_port = TacitServer.configs.server_port;
-  }
-  // App Port
-  if(typeof TacitServer.configs.app_port === 'undefined'){
-    //var app_port = process.env.PORT || 5000;
-    var app_port = TacitServer.configs.app_port = process.env.PORT;
-  }
-  else {
-    var app_port = TacitServer.configs.app_port;
-  }
-  // App List
-  if(typeof TacitServer.configs.app_list === 'undefined'){
-  	var app_list = {};
-  }
-  else {
-  	var app_list = TacitServer.configs.app_list;
-  }
-  // Api Port
-  if(typeof TacitServer.configs.api_port === 'undefined'){
-    //var api_port = app_port+1 || 5001;
-    var api_port = TacitServer.configs.api_port = app_port+1;
-  }
-  else {
-    var api_port = TacitServer.configs.api_port;
-  }
-  // Api List
-  if(typeof TacitServer.configs.api_list === 'undefined'){
-  	var api_list = {};
-  }
-  else {
-  	var api_list = TacitServer.configs.api_list;
-  }
-  // Command Port
-  if(typeof TacitServer.configs.cmd_port === 'undefined') {
-    //var cmd_port = app_port+2 || 5002;
-    var cmd_port = TacitServer.configs.cmd_port = app_port+2;
-  }
-  else {
-    var cmd_port = TacitServer.configs.cmd_port;
-  }
-  // Action List
-  if(typeof TacitServer.configs.action_list === 'undefined'){
-  	var action_list = TacitServer.configs.action_list = {};
-  }
-  else {
-  	var action_list = TacitServer.configs.action_list;
-  }
-  // Model List
-  if(typeof TacitServer.configs.model_list === 'undefined'){
-  	var model_list = TacitServer.configs.model_list = {};
-  }
-  else {
-  	var model_list = TacitServer.configs.model_list;
-  }
-  // Format List
-  if(typeof TacitServer.configs.format_list === 'undefined'){
-  	var format_list = TacitServer.configs.format_list = {};
-  }
-  else {
-  	var format_list = TacitServer.configs.format_list;
-  }
-  // User List
-  if(typeof TacitServer.configs.user_list === 'undefined'){
-  	var user_list = TacitServer.configs.user_list = {};
-  }
-  else {
-  	var user_list = TacitServer.configs.user_list;
-  }
+	TacitServer.configs = configs;
+	// Server Prefix
+	if(typeof TacitServer.configs.server_prefix === 'undefined'){
+		var server_prefix = TacitServer.configs.server_prefix = "SERVER_PREFIX";
+	}
+	else {
+		var server_prefix = TacitServer.configs.server_prefix;
+	}
+	// Server Port
+	if(typeof TacitServer.configs.server_port === 'undefined'){
+		//var server_port = process.env.PORT || 14080;
+		var server_port = TacitServer.configs.server_port = process.env.PORT;
+	}
+	else {
+		var server_port = TacitServer.configs.server_port;
+	}
+	// App Port
+	if(typeof TacitServer.configs.app_port === 'undefined'){
+		//var app_port = process.env.PORT || 5000;
+		var app_port = TacitServer.configs.app_port = process.env.PORT;
+	}
+	else {
+		var app_port = TacitServer.configs.app_port;
+	}
+	// App List
+	if(typeof TacitServer.configs.app_list === 'undefined'){
+		var app_list = {};
+	}
+	else {
+		var app_list = TacitServer.configs.app_list;
+	}
+	// Api Port
+	if(typeof TacitServer.configs.api_port === 'undefined'){
+		//var api_port = app_port+1 || 5001;
+		var api_port = TacitServer.configs.api_port = app_port+1;
+	}
+	else {
+		var api_port = TacitServer.configs.api_port;
+	}
+	// Api List
+	if(typeof TacitServer.configs.api_list === 'undefined'){
+		var api_list = {};
+	}
+	else {
+		var api_list = TacitServer.configs.api_list;
+	}
+	// Command Port
+	if(typeof TacitServer.configs.cmd_port === 'undefined') {
+		//var cmd_port = app_port+2 || 5002;
+		var cmd_port = TacitServer.configs.cmd_port = app_port+2;
+	}
+	else {
+		var cmd_port = TacitServer.configs.cmd_port;
+	}
+	// Action List
+	if(typeof TacitServer.configs.action_list === 'undefined'){
+		var action_list = TacitServer.configs.action_list = {};
+	}
+	else {
+		var action_list = TacitServer.configs.action_list;
+	}
+	// Model List
+	if(typeof TacitServer.configs.model_list === 'undefined'){
+		var model_list = TacitServer.configs.model_list = {};
+	}
+	else {
+		var model_list = TacitServer.configs.model_list;
+	}
+	// Format List
+	if(typeof TacitServer.configs.format_list === 'undefined'){
+		var format_list = TacitServer.configs.format_list = {};
+	}
+	else {
+		var format_list = TacitServer.configs.format_list;
+	}
+	// User List
+	if(typeof TacitServer.configs.user_list === 'undefined'){
+		var user_list = TacitServer.configs.user_list = {};
+	}
+	else {
+		var user_list = TacitServer.configs.user_list;
+	}
 };
 // TacitServer getConfigs function
 TacitServer.getConfigs = function getConfigs() {
-  return TacitServer.configs;
+	return TacitServer.configs;
 };
 // TacitServer setRouter function
 TacitServer.setRouter = function setRouter(router) {
-  /**
-  * ALL using router
-  */
-  // test
-  try {
-    App.use('/test', router.test);
-  }
-  catch(err) {
-    console.log(TacitServer.configs.server_prefix + " - Test Router: " + err);
-  }
-  // login
-  try {
-    App.use('/login', router.login);
-  }
-  catch(err) {
-    console.log(TacitServer.configs.server_prefix + " - Login Router: " + err);
-  }
-  // logout
-  try {
-    App.use('/logout', router.logout);
-  }
-  catch(err) {
-    console.log(TacitServer.configs.server_prefix + " - Logout Router: " + err);
-  }
-  // admin
-  try {
-    App.use('/admin', router.admin);
-  }
-  catch(err) {
-    console.log(TacitServer.configs.server_prefix + " - Admin Router: " + err);
-  }
-  // source
-  try {
-    App.use('/source', router.source);
-  }
-  catch(err) {
-    console.log(TacitServer.configs.server_prefix + " - Source Router: " + err);
-  }
-  // index, place last
-  try {
-    App.use('/', router.index);
-  }
-  catch(err) {
-    console.log(TacitServer.configs.server_prefix + " - Index Router: " + err);
-  }
+	/**
+	* ALL using router
+	*/
+	// test
+	try {
+		App.use('/test', router.test);
+	}
+	catch(err) {
+		console.log(TacitServer.configs.server_prefix + " - Test Router: " + err);
+	}
+	// login
+	try {
+		App.use('/login', router.login);
+	}
+	catch(err) {
+		console.log(TacitServer.configs.server_prefix + " - Login Router: " + err);
+	}
+	// logout
+	try {
+		App.use('/logout', router.logout);
+	}
+	catch(err) {
+		console.log(TacitServer.configs.server_prefix + " - Logout Router: " + err);
+	}
+	// admin
+	try {
+		App.use('/admin', router.admin);
+	}
+	catch(err) {
+		console.log(TacitServer.configs.server_prefix + " - Admin Router: " + err);
+	}
+	// source
+	try {
+		App.use('/source', router.source);
+	}
+	catch(err) {
+		console.log(TacitServer.configs.server_prefix + " - Source Router: " + err);
+	}
+	// index, place last
+	try {
+		App.use('/', router.index);
+	}
+	catch(err) {
+		console.log(TacitServer.configs.server_prefix + " - Index Router: " + err);
+	}
 };
 // TacitServer listen function
 TacitServer.listen = function listen() {
-  TacitServer.app_server = App.listen(TacitServer.configs.app_port, function() {
-  	console.log(TacitServer.configs.server_prefix + " - TacitServer app server listening on port %d in %s mode", TacitServer.configs.app_port, App.settings.env);
-  });
-  TacitServer.api_server = Api.listen(TacitServer.configs.api_port, function() {
-  	console.log(TacitServer.configs.server_prefix + " - TacitServer api server listening on port %d in %s mode", TacitServer.configs.api_port, Api.settings.env);
-  });
-  TacitServer.cmd_server = http.createServer(cmd); // Usage: http://localhost:port/filename.extension?key=value
-  TacitServer.cmd_server.listen(TacitServer.configs.cmd_port, function() {
-  	console.log(TacitServer.configs.server_prefix + " - TacitServer cmd server listening on port %d", TacitServer.configs.cmd_port);
-  });
+	TacitServer.app_server = App.listen(TacitServer.configs.app_port, function() {
+		console.log(TacitServer.configs.server_prefix + " - TacitServer app server listening on port %d in %s mode", TacitServer.configs.app_port, App.settings.env);
+	});
+	TacitServer.api_server = Api.listen(TacitServer.configs.api_port, function() {
+		console.log(TacitServer.configs.server_prefix + " - TacitServer api server listening on port %d in %s mode", TacitServer.configs.api_port, Api.settings.env);
+	});
+	TacitServer.cmd_server = http.createServer(cmd); // Usage: http://localhost:port/filename.extension?key=value
+	TacitServer.cmd_server.listen(TacitServer.configs.cmd_port, function() {
+		console.log(TacitServer.configs.server_prefix + " - TacitServer cmd server listening on port %d", TacitServer.configs.cmd_port);
+	});
 };
 // Add Server to TacitServer
 TacitServer.Server = Server;
